@@ -13,6 +13,7 @@ export default function NoteDetailsPage({ params }) {
   const [loading, setLoading] = useState(true);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [editMode, setEditMode] = useState(false);
 
   useEffect(() => {
     fetchNote();
@@ -81,35 +82,87 @@ export default function NoteDetailsPage({ params }) {
     }
   };
 
-  if (loading) return <div className="p-6">Loading...</div>;
+  if (loading)
+    return <div className="w-full px-3 sm:px-4 py-6 text-xs">Loading...</div>;
   if (!note) return null;
 
   return (
-    <div className="max-w-3xl mx-auto p-6">
-      <div className="card p-8 rounded shadow">
+    <div className="w-full px-3 sm:px-4 py-4">
+      <div className="card p-3 sm:p-4 rounded-lg border shadow-sm max-w-2xl mx-auto">
         {/* reading-focused header */}
-        <header className="mb-6 flex items-start justify-between gap-4">
-          <div>
-            <h1 className="text-3xl sm:text-4xl font-extrabold leading-tight text-fg">
-              {title}
-            </h1>
-            <p className="mt-2 text-sm text-muted">Topic</p>
+        <header className="mb-4 flex items-start justify-between gap-2">
+          <div className="flex-1">
+            {editMode ? (
+              <input
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                className="w-full text-lg sm:text-xl font-bold text-xs p-1 border rounded input-card outline-none mb-1"
+              />
+            ) : (
+              <h1 className="text-lg sm:text-xl font-bold leading-tight text-fg">
+                {title}
+              </h1>
+            )}
+            <p className="mt-1 text-xs text-fg-secondary">Note</p>
           </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => router.back()}
-              className="px-3 py-1 rounded bg-gray-200 text-black"
-            >
-              Back
-            </button>
-           
+          <div className="flex items-center gap-1 flex-wrap justify-end">
+            {editMode ? (
+              <>
+                <button
+                  onClick={save}
+                  className="px-2 py-1 btn-primary rounded text-xs font-medium"
+                >
+                  Save
+                </button>
+                <button
+                  onClick={() => setEditMode(false)}
+                  className="px-2 py-1 border rounded text-xs font-medium"
+                  style={{
+                    borderColor: "var(--border)",
+                    color: "var(--fg-secondary)",
+                  }}
+                >
+                  Cancel
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={() => setEditMode(true)}
+                  className="px-2 py-1 btn-primary rounded text-xs font-medium"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => router.back()}
+                  className="px-2 py-1 border rounded text-xs font-medium"
+                  style={{
+                    borderColor: "var(--border)",
+                    color: "var(--fg-secondary)",
+                  }}
+                >
+                  Back
+                </button>
+              </>
+            )}
           </div>
         </header>
 
-        <article className="prose max-w-none text-fg leading-7 whitespace-pre-wrap">
-          {content}
-        </article>
+        {editMode ? (
+          <textarea
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            className="w-full p-2 rounded text-xs input-card border resize-vertical outline-none min-h-40"
+          />
+        ) : (
+          <article className="text-fg leading-6 whitespace-pre-wrap text-xs">
+            {content}
+          </article>
+        )}
       </div>
     </div>
   );
 }
+
+let editMode = false;

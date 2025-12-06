@@ -192,49 +192,81 @@ export default function DashboardPage() {
       <nav
         className={`fixed top-0 left-0 right-0 z-50 transform transition-transform duration-300 ${
           showNav ? "translate-y-0" : "-translate-y-full"
-        } bg-gray-900/70 backdrop-blur-sm border-b border-gray-800`}
+        } border-b`}
+        style={{ background: "var(--card)", borderColor: "var(--border)" }}
       >
-        <div className="max-w-5xl mx-auto px-4 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <div className="w-full px-3 sm:px-4 py-3 sm:py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <h1 className="text-xl font-bold">🛠 My Workspace</h1>
-            <p className="text-sm text-gray-400 hidden sm:block">
+            <h1
+              className="text-2xl sm:text-3xl font-bold m-4"
+              style={{ color: "var(--primary)" }}
+            >
+              WorkSpace
+            </h1>
+            <p className="text-sm text-fg-secondary hidden sm:block">
               Notes & Tasks
             </p>
           </div>
           <input
             type="text"
-            placeholder="serach notes ...."
+            placeholder="Search notes..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="px-3 py-1 rounded-md border-1 text-sm text-white outline-none"
+            className="px-3 py-2 rounded text-sm border input-card outline-none w-full sm:w-64"
           />
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
             <button
               onClick={() => setTab("notes")}
               aria-pressed={tab === "notes"}
-              className={`px-3 py-1 rounded-md text-sm font-medium transition ${
-                tab === "notes"
-                  ? "bg-blue-500 text-black"
-                  : "bg-gray-700 text-gray-200 hover:bg-gray-600"
+              className={`px-3 sm:px-4 py-2 rounded text-sm font-medium transition ${
+                tab === "notes" ? "btn-primary" : "border"
               }`}
+              style={
+                tab === "notes"
+                  ? {}
+                  : {
+                      borderColor: "var(--border)",
+                      color: "var(--fg-secondary)",
+                    }
+              }
             >
-              Notes
+             WebD
             </button>
             <button
               onClick={() => setTab("tasks")}
               aria-pressed={tab === "tasks"}
-              className={`px-3 py-1 rounded-md text-sm font-medium transition ${
-                tab === "tasks"
-                  ? "bg-blue-500 text-black"
-                  : "bg-gray-700 text-gray-200 hover:bg-gray-600"
+              className={`px-3 sm:px-4 py-2 rounded text-sm font-medium transition ${
+                tab === "tasks" ? "btn-primary" : "border"
               }`}
+              style={
+                tab === "tasks"
+                  ? {}
+                  : {
+                      borderColor: "var(--border)",
+                      color: "var(--fg-secondary)",
+                    }
+              }
             >
               Tasks
             </button>
             <button
+              onClick={() => router.push("/dsa")}
+              className="px-3 sm:px-4 py-2 rounded text-sm font-medium border transition hover:bg-secondary"
+              style={{
+                borderColor: "var(--primary)",
+                color: "var(--primary)",
+              }}
+            >
+              DSA
+            </button>
+            <button
               onClick={handleLogout}
-              className="px-3 py-1 rounded-md bg-red-500 text-black text-sm font-medium"
+              className="px-3 sm:px-4 py-2 rounded text-sm font-medium border"
+              style={{
+                borderColor: "var(--border)",
+                color: "var(--fg-secondary)",
+              }}
             >
               Logout
             </button>
@@ -243,18 +275,23 @@ export default function DashboardPage() {
         </div>
       </nav>
 
-      <main className="flex-1 w-full pt-24">
-        <div className="max-w-5xl mx-auto p-4 sm:p-6">
-          <div className="card rounded-lg p-4 sm:p-6 shadow">
+      <main className="flex  w-full pt-20 ">
+        <div className="w-full  mx-auto max-w-7xl">
+          <div className="card rounded-lg shadow-sm">
             {tab === "notes" && (
-              <section>
-                <div className="flex flex-col sm:flex-row sm:items-start sm:gap-4 mb-4">
-                  <h2 className="text-2xl mb-3 sm:mb-0">Your Notes</h2>
+              <section className="p-1 sm:p-2">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:gap-3 mb-6">
+                  <h2
+                    className="text-xl sm:text-2xl font-bold mb-3 sm:mb-0"
+                    style={{ color: "var(--primary)" }}
+                  >
+                    Your Notes
+                  </h2>
                   <div className="flex-1" />
                 </div>
 
                 {/* Add new note */}
-                <div className="mb-6 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="mb-8 grid grid-cols-1 sm:grid-cols-3 gap-3 mt-5">
                   <input
                     type="text"
                     aria-label="Note title"
@@ -263,7 +300,7 @@ export default function DashboardPage() {
                     onChange={(e) =>
                       setNewNote({ ...newNote, title: e.target.value })
                     }
-                    className="sm:col-span-1 col-span-1 p-2 rounded-md input-card border border-muted placeholder-gray-400"
+                    className="sm:col-span-1 col-span-1 p-3 rounded text-sm input-card border outline-none"
                   />
                   <textarea
                     aria-label="Note content"
@@ -272,12 +309,12 @@ export default function DashboardPage() {
                     onChange={(e) =>
                       setNewNote({ ...newNote, content: e.target.value })
                     }
-                    className="sm:col-span-2 col-span-1 p-2 rounded-md input-card border border-muted placeholder-gray-400 resize-vertical"
+                    className="sm:col-span-2 col-span-1 p-3 rounded text-sm input-card border resize-vertical outline-none"
                   />
                   <div className="sm:col-span-3 flex justify-end">
                     <button
                       onClick={addNote}
-                      className="mt-1 inline-flex items-center gap-2 bg-green-600 text-black px-4 py-2 rounded-md font-medium hover:bg-green-500"
+                      className="inline-flex items-center gap-2 btn-primary px-6  py-3 rounded text-sm font-medium"
                     >
                       Add Note
                     </button>
@@ -285,15 +322,7 @@ export default function DashboardPage() {
                 </div>
 
                 {/* Notes list */}
-                <div className="grid  grid-cols-1 gap-4">
-                  {/* {notes.map((note) => (
-                    <NoteCard
-                      key={note._id}
-                      note={note}
-                      onUpdate={updateNote}
-                      onDelete={deleteNote}
-                    />
-                  ))} */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   {filteredNotes.length > 0 ? (
                     filteredNotes.map((note) => (
                       <NoteCard
@@ -304,30 +333,35 @@ export default function DashboardPage() {
                       />
                     ))
                   ) : (
-                    <p>No notes found</p>
+                    <p className="text-xs text-fg-secondary">No notes found</p>
                   )}
                 </div>
               </section>
             )}
 
             {tab === "tasks" && (
-              <section>
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-2xl">Your Tasks</h2>
+              <section className="p-4 sm:p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h2
+                    className="text-xl sm:text-2xl font-bold"
+                    style={{ color: "var(--primary)" }}
+                  >
+                    Your Tasks
+                  </h2>
                 </div>
 
-                <div className="mb-6 flex flex-col sm:flex-row gap-3">
+                <div className="mb-8 flex flex-col sm:flex-row gap-3">
                   <input
                     type="text"
                     aria-label="New task"
                     placeholder="Task text"
                     value={newTask}
                     onChange={(e) => setNewTask(e.target.value)}
-                    className="flex-1 p-2 rounded-md input-card border border-muted placeholder-gray-400"
+                    className="flex-1 p-3 rounded text-sm input-card border outline-none"
                   />
                   <button
                     onClick={addTask}
-                    className="inline-flex items-center gap-2 bg-green-600 text-black px-4 py-2 rounded-md font-medium hover:bg-green-500"
+                    className="inline-flex items-center gap-2 btn-primary px-6 py-3 rounded text-sm font-medium"
                   >
                     Add
                   </button>
@@ -387,29 +421,33 @@ function NoteCard({ note, onUpdate, onDelete }) {
   };
 
   return (
-    <div className="card p-4 shadow-gray-500 shadow-md rounded  transition-all duration-300 overflow-hidden w-full">
+    <div className="card p-4 rounded shadow-sm transition-all duration-300 overflow-hidden w-full border">
       {edit ? (
         <div className="space-y-2">
           <input
             value={form.title}
             onChange={(e) => setForm({ ...form, title: e.target.value })}
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border rounded text-sm input-card outline-none"
           />
           <textarea
             value={form.content}
             onChange={(e) => setForm({ ...form, content: e.target.value })}
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border rounded text-sm input-card resize-vertical outline-none"
           />
           <div className="flex gap-2">
             <button
               onClick={save}
-              className="px-2 py-1 bg-blue-600 text-white rounded"
+              className="px-3 py-2 btn-primary rounded text-sm font-medium"
             >
               Save
             </button>
             <button
               onClick={() => setEdit(false)}
-              className="px-2 py-1 bg-gray-300 rounded"
+              className="px-3 py-2 border rounded text-sm font-medium"
+              style={{
+                borderColor: "var(--border)",
+                color: "var(--fg-secondary)",
+              }}
             >
               Cancel
             </button>
@@ -418,31 +456,32 @@ function NoteCard({ note, onUpdate, onDelete }) {
       ) : (
         <>
           <h3
-            className="font-semibold cursor-pointer text-fg"
+            className="font-semibold cursor-pointer text-sm sm:text-base hover:opacity-80 transition"
             onClick={() => router.push(`/notes/${note._id}`)}
+            style={{ color: "var(--primary)" }}
           >
             {note.title}
           </h3>
-          <p className="text-fg whitespace-pre-wrap">{note.content}</p>
-          <div className="flex gap-2 mt-2 flex-wrap">
+          <p className="text-fg text-sm whitespace-pre-wrap mb-3">
+            {note.content}
+          </p>
+          <div className="flex gap-2 mt-3 flex-wrap">
             <button
               onClick={() => setEdit(true)}
-              className="px-2 py-1 bg-yellow-500 text-white rounded"
+              className="px-3 py-2 btn-primary rounded text-sm"
             >
               Edit
             </button>
-            {/* <button
-              onClick={() => onDelete(note._id)}
-              className="px-2 py-1 bg-red-500 text-white rounded"
-            >
-              Delete
-            </button> */}
             <button
               onClick={handleSummarize}
               disabled={loading}
-              className="px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded"
+              className="px-3 py-2 border rounded text-sm font-medium"
+              style={{
+                borderColor: "var(--border)",
+                color: "var(--fg-secondary)",
+              }}
             >
-              {loading ? "Summarizing..." : "Summarize with AI"}
+              {loading ? "Summarizing..." : "Summarize"}
             </button>
           </div>
           {/* Summary slides in */}
@@ -452,7 +491,7 @@ function NoteCard({ note, onUpdate, onDelete }) {
             }`}
           >
             {summary && (
-              <p className="mt-2 text-green-300">
+              <p className="mt-1 text-xs" style={{ color: "var(--primary)" }}>
                 <strong>Summary:</strong> {summary}
               </p>
             )}
@@ -472,9 +511,14 @@ function TaskItem({ task, onUpdate, onDelete }) {
   const toggleDone = () => onUpdate(task._id, text, !task.done);
 
   return (
-    <div className="card p-3 rounded shadow flex justify-between items-center">
+    <div className="card p-3 rounded shadow-sm flex justify-between items-center border">
       <div className="flex items-center gap-2">
-        <input type="checkbox" checked={task.done} onChange={toggleDone} />
+        <input
+          type="checkbox"
+          checked={task.done}
+          onChange={toggleDone}
+          className="w-5 h-5"
+        />
         <button
           onClick={() => router.push(`/tasks/${task._id}`)}
           className="text-left flex-1"
@@ -483,13 +527,15 @@ function TaskItem({ task, onUpdate, onDelete }) {
             value={text}
             onChange={(e) => setText(e.target.value)}
             onBlur={save}
-            className="w-full p-1 border-b bg-transparent text-fg"
+            className="w-full p-2 text-sm border-b bg-transparent text-fg outline-none"
+            style={{ borderColor: "var(--border)" }}
           />
         </button>
       </div>
       <button
         onClick={() => onDelete(task._id)}
-        className="px-2 py-1 bg-red-500 text-white rounded"
+        className="px-3 py-2 border rounded text-sm font-medium"
+        style={{ borderColor: "var(--border)", color: "var(--fg-secondary)" }}
       >
         Delete
       </button>
