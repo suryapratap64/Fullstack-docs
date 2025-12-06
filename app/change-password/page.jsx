@@ -43,53 +43,63 @@ export default function ChangePasswordPage() {
   };
 
   return (
-    <div className="max-w-full flex h-screen bg-gradient-to-b from-gray-700 via-green-300 to-gray-800 items-center">
-      <div className="max-w-lg mx-auto  p-6 shadow-2xl rounded-2xl   bg-black/60  ">
-        <h1 className="text-2xl font-bold mb-4">Change Password</h1>
-        <form onSubmit={submit} className="space-y-4">
+    <div
+      className="w-full min-h-screen flex flex-col items-center justify-center px-3 py-6"
+      style={{ background: "var(--bg)" }}
+    >
+      <div className="w-full max-w-sm card rounded-lg shadow-sm border p-4">
+        <h1
+          className="text-xl sm:text-2xl font-bold mb-4 text-center"
+          style={{ color: "var(--primary)" }}
+        >
+          Change Password
+        </h1>
+        <form onSubmit={submit} className="space-y-2">
           <div>
-            <label className="block text-sm font-medium mb-1">Email id</label>
+            <label className="block text-xs font-medium mb-1 text-fg-secondary">
+              Email
+            </label>
             <input
               type="email"
               value={email}
-              className="w-full p-2 rounded border"
+              className="w-full p-2 rounded border text-xs input-card outline-none"
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Email"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">
-              Current password
+            <label className="block text-xs font-medium mb-1 text-fg-secondary">
+              Current Password
             </label>
             <input
               type="password"
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
-              className="w-full p-2 border rounded"
+              className="w-full p-2 border rounded text-xs input-card outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">
-              New password
+            <label className="block text-xs font-medium mb-1 text-fg-secondary">
+              New Password
             </label>
             <input
               type="password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              className="w-full p-2 border rounded"
+              className="w-full p-2 border rounded text-xs input-card outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">
-              Confirm new password
+            <label className="block text-xs font-medium mb-1 text-fg-secondary">
+              Confirm Password
             </label>
             <input
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full p-2 border rounded"
+              className="w-full p-2 border rounded text-xs input-card outline-none"
             />
           </div>
 
@@ -97,9 +107,9 @@ export default function ChangePasswordPage() {
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 bg-blue-600 text-white rounded"
+              className="w-full px-3 py-2 btn-primary rounded text-xs font-medium mt-2"
             >
-              {loading ? "Saving..." : "Change password"}
+              {loading ? "Saving..." : "Change Password"}
             </button>
           </div>
         </form>

@@ -81,70 +81,83 @@ export default function TaskDetailsPage({ params }) {
 
   if (loading)
     return (
-      <div className="max-w-3xl mx-auto p-6">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 animate-pulse">
-          <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/4 mb-6"></div>
-          <div className="h-32 bg-gray-200 dark:bg-gray-700 rounded mb-6"></div>
-          <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/3"></div>
+      <div className="w-full px-3 sm:px-4 py-6">
+        <div className="bg-card rounded-lg border shadow-sm p-3 animate-pulse">
+          <div className="h-6 bg-muted rounded w-1/4 mb-4"></div>
+          <div className="h-24 bg-muted rounded mb-4"></div>
+          <div className="h-5 bg-muted rounded w-1/3"></div>
         </div>
       </div>
     );
   if (!task) return null;
 
   return (
-    <div className="max-w-3xl mx-auto p-6 font-[system-ui]">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 border border-gray-200 dark:border-gray-700">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
+    <div className="w-full px-3 sm:px-4 py-4 font-sans">
+      <div className="bg-card rounded-lg border shadow-sm p-3 max-w-2xl mx-auto">
+        <div className="flex justify-between items-center mb-4">
+          <h2
+            className="text-lg sm:text-xl font-bold"
+            style={{ color: "var(--primary)" }}
+          >
             Task Details
           </h2>
           <button
             onClick={() => router.back()}
-            className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 dark:text-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-lg transition-colors"
+            className="px-2 sm:px-3 py-1 text-xs font-medium border rounded transition"
+            style={{
+              borderColor: "var(--border)",
+              color: "var(--fg-secondary)",
+            }}
           >
             ← Back
           </button>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-xs font-medium text-fg-secondary mb-1">
               Description
             </label>
             <textarea
               value={text}
               onChange={(e) => setText(e.target.value)}
-              className="w-full p-4 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 transition-colors text-base leading-relaxed min-h-[120px]"
+              className="w-full p-2 rounded-lg bg-bg-secondary border text-xs input-card focus:border-primary focus:ring-1 focus:ring-primary focus:ring-opacity-20 transition-colors leading-relaxed min-h-24"
               placeholder="Enter task description..."
+              style={{ borderColor: "var(--border)" }}
             />
           </div>
 
-          <div className="flex items-center gap-3 py-2">
+          <div className="flex items-center gap-2 py-1">
             <input
               id="done"
               type="checkbox"
               checked={done}
               onChange={() => setDone((d) => !d)}
-              className="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700"
+              className="w-4 h-4 border rounded"
+              style={{ borderColor: "var(--border)" }}
             />
-            <label
-              htmlFor="done"
-              className="text-base font-medium text-gray-700 dark:text-gray-300"
-            >
+            <label htmlFor="done" className="text-xs font-medium text-fg">
               Mark as completed
             </label>
           </div>
 
-          <div className="flex gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+          <div
+            className="flex gap-2 pt-2 border-t"
+            style={{ borderColor: "var(--border)" }}
+          >
             <button
               onClick={save}
-              className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+              className="px-3 py-1 btn-primary rounded text-xs font-medium transition"
             >
               Save Changes
             </button>
             <button
               onClick={remove}
-              className="px-6 py-2.5 bg-red-500 hover:bg-red-600 text-white font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
+              className="px-3 py-1 border rounded text-xs font-medium transition"
+              style={{
+                borderColor: "var(--border)",
+                color: "var(--fg-secondary)",
+              }}
             >
               Delete Task
             </button>

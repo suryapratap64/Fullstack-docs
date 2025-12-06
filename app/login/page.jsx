@@ -13,7 +13,7 @@ export default function LoginPage() {
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
- const [showPassword,setshowPassword]=useState(false);
+  const [showPassword, setshowPassword] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -39,72 +39,74 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-b from-gray-100 via-green-200 to-gray-800 text-white">
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-black/60"></div>
-
+    <div
+      className="relative min-h-screen w-full flex flex-col items-center justify-center px-3 py-6"
+      style={{ background: "var(--bg)" }}
+    >
       {/* Login form */}
-      <div className="relative flex flex-col items-center justify-center min-h-screen px-4">
-        <div className="max-w-md w-full bg-gray-800 bg-opacity-70 p-8 rounded-md">
-          <h1 className="text-3xl font-bold mb-6 text-center">Login</h1>
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      <div className="w-full max-w-sm card rounded-lg shadow-sm border p-4">
+        <h1
+          className="text-xl sm:text-2xl font-bold mb-4 text-center"
+          style={{ color: "var(--primary)" }}
+        >
+          Login
+        </h1>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={form.email}
+            onChange={handleChange}
+            required
+            className="input-card border rounded text-xs p-2 outline-none"
+          />
+          <div className="w-full input-card border flex items-center rounded">
             <input
-              type="email"
-              name="email"
-              placeholder="Email"
-              value={form.email}
-              onChange={handleChange}
-              required
-              className="bg-gray-700 text-white px-4 py-3 rounded focus:outline-none"
-            />
-            <div className="min-w-full  bg-gray-700 flex items-center rounded-sm   ">
-               <input
-              type={ showPassword ? "text":"password"}
+              type={showPassword ? "text" : "password"}
               name="password"
               placeholder="Password"
               value={form.password}
               onChange={handleChange}
               required
-              className="bg-gray-700 text-white px-4 py-3 rounded focus:outline-none grow"
-//               ✅ This means:
-
-// The input will stretch to fill all remaining width inside the flex container.
-            
-            
+              className="input-card text-xs px-2 py-2 rounded outline-none grow bg-transparent border-0"
             />
-            <div className=" px-3 text-white " onClick={()=>setshowPassword(!showPassword)}>
-              {showPassword ?  <FaEyeSlash />:<FaEye/>}
-
-            </div>
-             
-            </div>
-           
-            <button
-              type="submit"
-              className="bg-green-600 hover:bg-green-800 transition py-3 rounded font-semibold"
+            <div
+              className="px-2 text-fg cursor-pointer"
+              onClick={() => setshowPassword(!showPassword)}
             >
-              Login
-            </button>
-            {error && (
-              <p className="text-red-400 text-sm text-center">{error}</p>
-            )}
-          </form>
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </div>
+          </div>
 
-          <p className="text-gray-400 text-sm mt-6 text-center">
-            New to our site?{" "}
-            <a href="/register" className="text-white hover:underline">
-              sign up now
-            </a>
-            .
-          </p>
-          <p className="text-gray-400 text-sm mt-2 text-center">
-            Forgot your password or want to change it?{" "}
-            <a href="/change-password" className="text-white hover:underline">
-              Change password
-            </a>
-            .
-          </p>
-        </div>
+          <button
+            type="submit"
+            className="btn-primary transition py-2 rounded font-semibold text-xs mt-2"
+          >
+            Login
+          </button>
+          {error && (
+            <p className="text-xs text-fg-secondary text-center">{error}</p>
+          )}
+        </form>
+
+        <p className="text-fg-secondary text-xs mt-4 text-center">
+          New here?{" "}
+          <a
+            href="/register"
+            className="text-primary hover:underline font-medium"
+          >
+            sign up
+          </a>
+        </p>
+        <p className="text-fg-secondary text-xs mt-2 text-center">
+          <a
+            href="/change-password"
+            className="text-primary hover:underline font-medium"
+          >
+            Change password
+          </a>
+        </p>
       </div>
     </div>
   );
