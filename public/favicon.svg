@@ -1,0 +1,20 @@
+<svg viewBox="0 0 768 768" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .dsa-letter { fill: #00A8E8; font-family: Arial, sans-serif; font-size: 280px; font-weight: bold; }
+      .dsa-circle { fill: none; stroke: #FF3B3B; stroke-width: 35; }
+    </style>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="768" height="768" fill="#000000"/>
+  
+  <!-- Red Circle Orbit -->
+  <ellipse cx="384" cy="320" rx="280" ry="240" class="dsa-circle"/>
+  
+  <!-- Blue Circle Outline -->
+  <circle cx="384" cy="320" r="300" fill="none" stroke="#00A8E8" stroke-width="30" opacity="0.6"/>
+  
+  <!-- DSA Text -->
+  <text x="384" y="450" class="dsa-letter" text-anchor="middle">DSA</text>
+</svg>
