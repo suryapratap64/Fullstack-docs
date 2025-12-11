@@ -250,7 +250,7 @@ export default function DashboardPage() {
             >
               Tasks
             </button>
-            <button
+            {/* <button
               onClick={() => router.push("/dsa")}
               className="px-3 sm:px-4 py-2 rounded text-sm font-medium border transition hover:bg-secondary"
               style={{
@@ -259,7 +259,7 @@ export default function DashboardPage() {
               }}
             >
               DSA
-            </button>
+            </button> */}
             <button
               onClick={handleLogout}
               className="px-3 sm:px-4 py-2 rounded text-sm font-medium border"

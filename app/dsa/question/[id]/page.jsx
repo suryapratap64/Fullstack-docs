@@ -236,12 +236,12 @@ export default function QuestionDetailPage({ params }) {
             >
               ✏️ Edit
             </button>
-            <button
+            {/* <button
               onClick={deleteQuestion}
               className="px-3 py-2 text-xs rounded border border-red-300 text-red-600 transition hover:bg-red-50"
             >
               🗑️ Delete
-            </button>
+            </button> */}
           </div>
         </div>
       </div>
