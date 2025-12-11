@@ -17,6 +17,7 @@ export const metadata = {
     "Master Data Structures and Algorithms with interactive coding challenges",
   icons: {
     icon: "/favicon.svg",
+    apple: "/favicon.svg",
   },
 };
 
