@@ -51,7 +51,7 @@ export default function LoginPage() {
         >
           Login
         </h1>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <input
             type="email"
             name="email"
@@ -59,7 +59,7 @@ export default function LoginPage() {
             value={form.email}
             onChange={handleChange}
             required
-            className="input-card border rounded text-xs p-2 outline-none"
+            className="input-card border rounded text-xs p-3 outline-none"
           />
           <div className="w-full input-card border flex items-center rounded">
             <input
@@ -69,10 +69,10 @@ export default function LoginPage() {
               value={form.password}
               onChange={handleChange}
               required
-              className="input-card text-xs px-2 py-2 rounded outline-none grow bg-transparent border-0"
+              className="input-card text-xs px-3 py-3 rounded outline-none grow bg-transparent border-0"
             />
             <div
-              className="px-2 text-fg cursor-pointer"
+              className="px-3 text-fg cursor-pointer"
               onClick={() => setshowPassword(!showPassword)}
             >
               {showPassword ? <FaEyeSlash /> : <FaEye />}
@@ -81,12 +81,14 @@ export default function LoginPage() {
 
           <button
             type="submit"
-            className="btn-primary transition py-2 rounded font-semibold text-xs mt-2"
+            className="btn-primary transition py-3 rounded font-semibold text-xs mt-4"
           >
             Login
           </button>
           {error && (
-            <p className="text-xs text-fg-secondary text-center">{error}</p>
+            <p className="text-xs text-fg-secondary text-center mt-2">
+              {error}
+            </p>
           )}
         </form>
 
