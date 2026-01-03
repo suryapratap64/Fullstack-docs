@@ -112,14 +112,14 @@ export default function DSAPage() {
           </button>
           <button
             onClick={() => router.push("/dsa/upload")}
-            className="px-6 py-3 btn-primary rounded-lg text-sm font-medium transition hover:shadow-lg"
+            className="px-6 py-3 btn-primary rounded-lg text-sm font-medium transition hover:shadow-lg "
           >
             + Add New Question
           </button>
         </div>
 
         {/* Chapters Grid */}
-        <div className="grid grid-cols-1 gap-2">
+        <div className="grid grid-cols-1 ">
           {CHAPTERS.map((chapter) => {
             const slug = chapter.name
               .toLowerCase()
@@ -132,7 +132,7 @@ export default function DSAPage() {
               <div
                 key={chapter.name}
                 onClick={() => router.push(`/dsa/chapter/${slug}`)}
-                className="p-6 bg-card rounded-lg border shadow-sm hover:shadow-md cursor-pointer transition transform hover:scale-101"
+                className="p-6 bg-card  border shadow-sm cursor-pointer transition hover:bg-gray-800"
                 style={{ borderColor: "var(--border)" }}
               >
                 <h2 className="text-sm sm:text-base font-semibold text-fg mb-3">
