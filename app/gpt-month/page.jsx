@@ -568,89 +568,172 @@ export default function GptMonthPage() {
                     className="text-lg font-bold mb-4"
                     style={{ color: "var(--primary)" }}
                   >
-                    Posts
+                    📝 Posts ({selectedMonth.posts?.length || 0})
                   </h3>
                   {selectedMonth.posts?.length === 0 ? (
-                    <p
-                      style={{ color: "var(--fg-secondary)" }}
-                      className="text-sm"
+                    <div
+                      className="p-8 rounded-lg text-center border-2 border-dashed"
+                      style={{
+                        background: "rgba(var(--primary-rgb), 0.05)",
+                        borderColor: "rgba(var(--primary-rgb), 0.2)",
+                      }}
                     >
-                      No posts yet. Add one to get started!
-                    </p>
+                      <p
+                        style={{ color: "var(--fg-secondary)" }}
+                        className="text-sm font-medium"
+                      >
+                        No posts yet. Add one to get started!
+                      </p>
+                    </div>
                   ) : (
-                    <div className="space-y-3 max-h-[45vh] overflow-y-auto">
+                    <div className="space-y-4 max-h-[55vh] overflow-y-auto pr-2">
                       {selectedMonth.posts?.map((post, idx) => (
                         <div
                           key={post._id || idx}
-                          className="p-4 rounded-lg border transition hover:border-primary"
-                          style={{ background: "var(--bg)" }}
+                          className="p-5 rounded-xl border-2 transition-all hover:shadow-lg"
+                          style={{
+                            background: "var(--bg)",
+                            borderColor: "rgba(var(--primary-rgb), 0.2)",
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.borderColor =
+                              "var(--primary)";
+                            e.currentTarget.style.boxShadow =
+                              "0 4px 12px rgba(var(--primary-rgb), 0.15)";
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.borderColor =
+                              "rgba(var(--primary-rgb), 0.2)";
+                            e.currentTarget.style.boxShadow = "none";
+                          }}
                         >
-                          <div className="flex items-start justify-between mb-2">
-                            <div>
+                          {/* Post Header */}
+                          <div className="flex items-start justify-between mb-3">
+                            <div className="flex-1">
                               <h4
-                                className="font-bold"
+                                className="text-base font-bold mb-2"
                                 style={{ color: "var(--fg)" }}
                               >
                                 {post.title}
                               </h4>
-                              <p
-                                style={{ color: "var(--fg-secondary)" }}
-                                className="text-sm"
-                              >
-                                {post.description}
-                              </p>
+                              {post.description && (
+                                <div
+                                  className="p-3 rounded-lg mb-3 text-sm leading-relaxed"
+                                  style={{
+                                    background:
+                                      "rgba(var(--primary-rgb), 0.08)",
+                                    borderLeft: "3px solid var(--primary)",
+                                    color: "var(--fg)",
+                                    fontWeight: "500",
+                                  }}
+                                >
+                                  {post.description}
+                                </div>
+                              )}
                             </div>
-                            <div className="flex gap-2">
-                              <button
-                                onClick={() => {
-                                  setEditingPost(post);
-                                  setPostData({
-                                    title: post.title,
-                                    description: post.description,
-                                    content: post.content,
-                                    category: post.category,
-                                    difficulty: post.difficulty,
-                                    tags: post.tags.join(", "),
-                                  });
-                                  setShowPostModal(true);
-                                }}
-                                className="text-blue-500 hover:text-blue-400"
-                              >
-                                <FaEdit size={14} />
-                              </button>
-                              {/* <button
-                                onClick={() =>
-                                  handleDeletePost(post._id || idx)
-                                }
-                                className="text-red-500 hover:text-red-400"
-                              >
-                                <FaTrash size={14} />
-                              </button> */}
-                            </div>
+                            <button
+                              onClick={() => {
+                                setEditingPost(post);
+                                setPostData({
+                                  title: post.title,
+                                  description: post.description,
+                                  content: post.content,
+                                  category: post.category,
+                                  difficulty: post.difficulty,
+                                  tags: post.tags.join(", "),
+                                });
+                                setShowPostModal(true);
+                              }}
+                              className="ml-2 p-2 rounded-lg transition flex-shrink-0"
+                              style={{
+                                background: "rgba(var(--primary-rgb), 0.1)",
+                                color: "var(--primary)",
+                              }}
+                              title="Edit post"
+                            >
+                              <FaEdit size={16} />
+                            </button>
                           </div>
-                          <div className="flex flex-wrap gap-2 items-center text-xs">
-                            <span className="badge bg-purple-500/20 text-purple-400 px-2 py-1 rounded">
-                              {post.category}
-                            </span>
-                            <span className="badge bg-orange-500/20 text-orange-400 px-2 py-1 rounded">
-                              {post.difficulty}
-                            </span>
-                            {post.tags?.map((tag) => (
-                              <span
-                                key={tag}
-                                className="badge bg-cyan-500/20 text-cyan-400 px-2 py-1 rounded"
-                              >
-                                #{tag}
-                              </span>
-                            ))}
-                          </div>
+
+                          {/* Post Content */}
                           {post.content && (
-                            <p
-                              style={{ color: "var(--fg-secondary)" }}
-                              className="text-xs mt-2 line-clamp-2"
+                            <div
+                              className="p-3 rounded-lg mb-4 text-sm leading-relaxed font-mono"
+                              style={{
+                                background: "rgba(var(--primary-rgb), 0.05)",
+                                borderLeft: "3px solid var(--primary)",
+                                color: "var(--fg-secondary)",
+                                whiteSpace: "pre-wrap",
+                                wordWrap: "break-word",
+                                overflowWrap: "break-word",
+                              }}
                             >
                               {post.content}
-                            </p>
+                            </div>
+                          )}
+
+                          {/* Metadata Section */}
+                          <div className="grid grid-cols-2 gap-3 mb-4 text-xs">
+                            <div
+                              className="p-2 rounded-lg"
+                              style={{ background: "rgba(168, 85, 247, 0.1)" }}
+                            >
+                              <p
+                                style={{ color: "rgba(168, 85, 247, 0.7)" }}
+                                className="text-xs font-semibold mb-1"
+                              >
+                                Category
+                              </p>
+                              <p
+                                style={{ color: "rgb(168, 85, 247)" }}
+                                className="font-bold"
+                              >
+                                {post.category}
+                              </p>
+                            </div>
+                            <div
+                              className="p-2 rounded-lg"
+                              style={{ background: "rgba(249, 115, 22, 0.1)" }}
+                            >
+                              <p
+                                style={{ color: "rgba(249, 115, 22, 0.7)" }}
+                                className="text-xs font-semibold mb-1"
+                              >
+                                Difficulty
+                              </p>
+                              <p
+                                style={{ color: "rgb(249, 115, 22)" }}
+                                className="font-bold"
+                              >
+                                {post.difficulty}
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* Tags Section */}
+                          {post.tags?.length > 0 && (
+                            <div className="flex flex-wrap gap-2 items-start">
+                              <span
+                                style={{ color: "var(--fg-secondary)" }}
+                                className="text-xs font-semibold mt-1"
+                              >
+                                Tags:
+                              </span>
+                              <div className="flex flex-wrap gap-2">
+                                {post.tags?.map((tag) => (
+                                  <span
+                                    key={tag}
+                                    className="badge px-3 py-1 rounded-full text-xs font-medium transition hover:scale-105"
+                                    style={{
+                                      background: "rgba(34, 197, 94, 0.2)",
+                                      color: "rgb(34, 197, 94)",
+                                    }}
+                                  >
+                                    #{tag}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
                           )}
                         </div>
                       ))}
