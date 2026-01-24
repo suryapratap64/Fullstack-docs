@@ -11,29 +11,31 @@ export async function POST(request) {
 
     const { email, password } = await request.json();
 
+    if (!email || !password) {
+      return Response.json(
+        { message: "Email and password are required" },
+        { status: 400 },
+      );
+    }
+
     const user = await User.findOne({ email });
     if (!user) {
       return Response.json(
         { message: "Invalid email or password" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
-    // const match = await password.compare(password, user.password);
-    // if (!match) {
-    //   return Response.json(
-    //     { message: "Invalid email or password" },
-    //     { status: 401 }
-    //   );
-    // }
-
-    // create JWT
-        // Plain-text password comparison
-    if (password !== user.password) {
-      return new Response(JSON.stringify({ message: "Invalid email or password" }), {
-        status: 401,
-        headers: { "Content-Type": "application/json" },
-      });
+    // Compare hashed password using bcrypt
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) {
+      return new Response(
+        JSON.stringify({ message: "Invalid email or password" }),
+        {
+          status: 401,
+          headers: { "Content-Type": "application/json" },
+        },
+      );
     }
 
     const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, {

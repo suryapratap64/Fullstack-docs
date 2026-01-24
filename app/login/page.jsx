@@ -4,21 +4,31 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaLock, FaEnvelope } from "react-icons/fa";
+
 export default function LoginPage() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+    setError("");
   };
-  const [showPassword, setshowPassword] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
+    if (!form.email || !form.password) {
+      setError("Please fill in all fields");
+      toast.error("Please fill in all fields");
+      return;
+    }
+
+    setLoading(true);
     try {
       const res = await fetch("/api/login", {
         method: "POST",
@@ -33,8 +43,11 @@ export default function LoginPage() {
       router.push("/");
     } catch (err) {
       console.error(err);
-      setError(err.message);
-      toast.error(err.message);
+      const errorMsg = err.message || "Something went wrong";
+      setError(errorMsg);
+      toast.error(errorMsg);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -44,52 +57,94 @@ export default function LoginPage() {
       style={{ background: "var(--bg)" }}
     >
       {/* Login form */}
-      <div className="w-full max-w-sm card rounded-lg shadow-sm border p-4">
-        <h1
-          className="text-xl sm:text-2xl font-bold mb-4 text-center"
-          style={{ color: "var(--primary)" }}
-        >
-          Login
-        </h1>
+      <div className="w-full max-w-sm card rounded-lg shadow-lg border p-6">
+        <div className="text-center mb-6">
+          <div className="flex justify-center mb-3">
+            <FaLock className="text-3xl" style={{ color: "var(--primary)" }} />
+          </div>
+          <h1
+            className="text-2xl sm:text-3xl font-bold"
+            style={{ color: "var(--primary)" }}
+          >
+            Login
+          </h1>
+          <p style={{ color: "var(--fg-secondary)" }} className="text-xs mt-2">
+            Welcome back! Please login to your account
+          </p>
+        </div>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={form.email}
-            onChange={handleChange}
-            required
-            className="input-card border rounded text-xs p-3 outline-none"
-          />
-          <div className="w-full input-card border flex items-center rounded">
-            <input
-              type={showPassword ? "text" : "password"}
-              name="password"
-              placeholder="Password"
-              value={form.password}
-              onChange={handleChange}
-              required
-              className="input-card text-xs px-3 py-3 rounded outline-none grow bg-transparent border-0"
-            />
-            <div
-              className="px-3 text-fg cursor-pointer"
-              onClick={() => setshowPassword(!showPassword)}
+          <div>
+            <label
+              className="block text-xs font-medium mb-2"
+              style={{ color: "var(--fg-secondary)" }}
             >
-              {showPassword ? <FaEyeSlash /> : <FaEye />}
+              Email Address
+            </label>
+            <div className="flex items-center input-card border rounded px-3">
+              <FaEnvelope
+                className="text-sm"
+                style={{ color: "var(--primary)" }}
+              />
+              <input
+                type="email"
+                name="email"
+                placeholder="you@example.com"
+                value={form.email}
+                onChange={handleChange}
+                required
+                className="input-card text-xs px-3 py-3 outline-none grow bg-transparent border-0"
+              />
+            </div>
+          </div>
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <label
+                className="block text-xs font-medium"
+                style={{ color: "var(--fg-secondary)" }}
+              >
+                Password
+              </label>
+              <a
+                href="#"
+                className="text-xs hover:underline"
+                style={{ color: "var(--primary)" }}
+              >
+                Forgot password?
+              </a>
+            </div>
+            <div className="w-full input-card border flex items-center rounded px-3">
+              <FaLock className="text-sm" style={{ color: "var(--primary)" }} />
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                placeholder="Enter your password"
+                value={form.password}
+                onChange={handleChange}
+                required
+                className="input-card text-xs px-3 py-3 outline-none grow bg-transparent border-0"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="px-2 text-fg cursor-pointer hover:opacity-70 transition"
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
             </div>
           </div>
 
+          {error && (
+            <div className="p-3 rounded bg-red-500/10 border border-red-500/30">
+              <p className="text-xs text-red-500 text-center">{error}</p>
+            </div>
+          )}
           <button
             type="submit"
-            className="btn-primary transition py-3 rounded font-semibold text-xs mt-4"
+            disabled={loading}
+            className="btn-primary transition py-3 rounded font-semibold text-sm mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Login
+            {loading ? "Logging in..." : "Login"}
           </button>
-          {error && (
-            <p className="text-xs text-fg-secondary text-center mt-2">
-              {error}
-            </p>
-          )}
         </form>
 
         <p className="text-fg-secondary text-xs mt-4 text-center">
