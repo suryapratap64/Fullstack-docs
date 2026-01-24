@@ -419,13 +419,13 @@ export default function GptMonthPage() {
                     >
                       {selectedMonth.isFavorite ? <FaHeart /> : <FaRegHeart />}
                     </button>
-                    <button
+                    {/* <button
                       onClick={() => handleDeleteMonth(selectedMonth._id)}
                       className="p-2 rounded-lg transition"
                       style={{ background: "var(--bg)" }}
                     >
                       <FaTrash style={{ color: "var(--danger)" }} />
-                    </button>
+                    </button> */}
                   </div>
                 </div>
 
@@ -618,14 +618,14 @@ export default function GptMonthPage() {
                               >
                                 <FaEdit size={14} />
                               </button>
-                              <button
+                              {/* <button
                                 onClick={() =>
                                   handleDeletePost(post._id || idx)
                                 }
                                 className="text-red-500 hover:text-red-400"
                               >
                                 <FaTrash size={14} />
-                              </button>
+                              </button> */}
                             </div>
                           </div>
                           <div className="flex flex-wrap gap-2 items-center text-xs">
