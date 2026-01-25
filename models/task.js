@@ -1,10 +1,16 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-const taskSchema = new mongoose.Schema({
-  text: String,
-  done: { type: Boolean, default: false },
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
-}, { timestamps: true });
+const taskSchema = new mongoose.Schema(
+  {
+    english: { type: String, required: true },
+    meaning: { type: String, required: true },
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+  },
+  { timestamps: true },
+);
 
-const Task= mongoose.models.Task || mongoose.model('Task', taskSchema);
-export default Task;
+export default mongoose.models.Task || mongoose.model("Task", taskSchema);
