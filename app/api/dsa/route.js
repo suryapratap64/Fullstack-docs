@@ -5,7 +5,15 @@ import { verifyToken } from "../../../utils/jwt";
 export async function GET(req) {
   try {
     await connectDB();
-    const dsa = await DSA.find().sort({ createdAt: -1 });
+    const token = req.cookies.get("token")?.value;
+    if (!token)
+      return Response.json({ error: "Unauthorized" }, { status: 401 });
+
+    const user = verifyToken(token);
+    if (!user)
+      return Response.json({ error: "Invalid token" }, { status: 401 });
+
+    const dsa = await DSA.find({ userId: user.id }).sort({ createdAt: 1 });
     return Response.json(dsa);
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });

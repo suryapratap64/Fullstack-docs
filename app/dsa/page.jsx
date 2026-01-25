@@ -87,6 +87,18 @@ export default function DSAPage() {
       style={{ backgroundColor: "var(--bg)" }}
     >
       <div className="px-6 sm:px-8 py-8 w-full">
+        {/* Back Button */}
+        <button
+          onClick={() => router.back()}
+          className="flex items-center gap-2 mb-6 px-3 py-2 rounded-lg transition"
+          style={{
+            color: "var(--primary)",
+            background: "rgba(var(--primary-rgb), 0.1)",
+          }}
+        >
+          ← Back
+        </button>
+
         {/* Header */}
         <div className="mb-8 text-center">
           <h1 className="text-3xl sm:text-4xl font-bold mb-2 text-fg">
@@ -126,7 +138,7 @@ export default function DSAPage() {
               .replace(/[^\w\s-]/g, "")
               .replace(/\s+/g, "-");
             const progress = Math.round(
-              (chapter.problems / chapter.total) * 100
+              (chapter.problems / chapter.total) * 100,
             );
             return (
               <div

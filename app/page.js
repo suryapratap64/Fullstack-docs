@@ -4,16 +4,21 @@ import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import ThemeToggle from "../components/ThemeToggle";
+import TaskCard from "../components/TaskCard";
 
 export default function DashboardPage() {
   const router = useRouter();
   const [tab, setTab] = useState("notes");
   const [showNav, setShowNav] = useState(true);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [notes, setNotes] = useState([]);
   const [tasks, setTasks] = useState([]);
 
   const [newNote, setNewNote] = useState({ title: "", content: "" });
-  const [newTask, setNewTask] = useState("");
+  const [newTask, setNewTask] = useState({
+    english: "",
+    meaning: "",
+  });
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
@@ -71,9 +76,13 @@ export default function DashboardPage() {
   });
 
   const fetchTasks = async () => {
-    const res = await fetch("/api/tasks");
+    const res = await fetch("/api/tasks", {
+      credentials: "include",
+    });
     if (res.ok) {
-      setTasks(await res.json());
+      const data = await res.json();
+      console.log("Tasks fetched:", data);
+      setTasks(data);
     } else {
       toast.error("Failed to load tasks");
     }
@@ -125,32 +134,38 @@ export default function DashboardPage() {
   };
 
   const addTask = async () => {
-    if (!newTask) return toast.error("Enter task text");
+    if (!newTask.english || !newTask.meaning)
+      return toast.error("Fill all fields");
     const res = await fetch("/api/tasks", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text: newTask }),
+      credentials: "include",
+      body: JSON.stringify(newTask),
     });
     if (res.ok) {
-      toast.success("Task added");
-      setNewTask("");
+      toast.success("Word added");
+      setNewTask({
+        english: "",
+        meaning: "",
+      });
       fetchTasks();
     } else {
-      toast.error("Failed to add task");
+      toast.error("Failed to add word");
     }
   };
 
-  const updateTask = async (taskId, text, done) => {
+  const updateTask = async (taskId, english, meaning) => {
     const res = await fetch("/api/tasks", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ taskId, text, done }),
+      credentials: "include",
+      body: JSON.stringify({ taskId, english, meaning }),
     });
     if (res.ok) {
-      toast.success("Task updated");
+      toast.success("Word updated");
       fetchTasks();
     } else {
-      toast.error("Failed to update task");
+      toast.error("Failed to update word");
     }
   };
 
@@ -195,10 +210,12 @@ export default function DashboardPage() {
         } border-b`}
         style={{ background: "var(--card)", borderColor: "var(--border)" }}
       >
-        <div className="w-full px-3 sm:px-4 py-3 sm:py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
+        {/* Top Row: Logo + Hamburger */}
+        <div className="w-full px-3 sm:px-4 py-3 flex items-center justify-between">
+          {/* Logo */}
+          <div className="flex items-center gap-2 flex-shrink-0">
             <h1
-              className="text-2xl sm:text-3xl font-bold m-4"
+              className="text-2xl sm:text-3xl font-bold"
               style={{ color: "var(--primary)" }}
             >
               WorkSpace
@@ -207,19 +224,65 @@ export default function DashboardPage() {
               Notes & Tasks
             </p>
           </div>
+
+          {/* Hamburger Menu Button (Mobile) */}
+          <button
+            onClick={() => setShowMobileMenu(!showMobileMenu)}
+            className="sm:hidden flex flex-col gap-1.5 p-2 flex-shrink-0"
+            aria-label="Toggle menu"
+          >
+            <span
+              className="w-6 h-0.5 transition-all duration-300 origin-center"
+              style={{
+                background: "var(--primary)",
+                transform: showMobileMenu
+                  ? "rotate(45deg) translateY(8px)"
+                  : "",
+              }}
+            ></span>
+            <span
+              className="w-6 h-0.5 transition-all duration-300"
+              style={{
+                background: "var(--primary)",
+                opacity: showMobileMenu ? 0 : 1,
+              }}
+            ></span>
+            <span
+              className="w-6 h-0.5 transition-all duration-300 origin-center"
+              style={{
+                background: "var(--primary)",
+                transform: showMobileMenu
+                  ? "rotate(-45deg) translateY(-8px)"
+                  : "",
+              }}
+            ></span>
+          </button>
+        </div>
+
+        {/* Search Bar Below Logo */}
+        <div
+          className="w-full px-3 sm:px-4 py-2 border-t"
+          style={{ borderColor: "var(--border)" }}
+        >
           <input
             type="text"
             placeholder="Search notes..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="px-3 py-2 rounded text-sm border input-card outline-none w-full sm:w-64"
+            className="w-full px-3 py-2 rounded text-sm border input-card outline-none"
           />
+        </div>
 
-          <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+        {/* Desktop Navigation */}
+        <div
+          className="hidden sm:block w-full px-3 sm:px-4 py-2 border-t"
+          style={{ borderColor: "var(--border)" }}
+        >
+          <div className="flex items-center gap-2">
             <button
               onClick={() => setTab("notes")}
               aria-pressed={tab === "notes"}
-              className={`px-3 sm:px-4 py-2 rounded text-sm font-medium transition ${
+              className={`px-3 py-2 rounded text-sm font-medium transition ${
                 tab === "notes" ? "btn-primary" : "border"
               }`}
               style={
@@ -236,7 +299,7 @@ export default function DashboardPage() {
             <button
               onClick={() => setTab("tasks")}
               aria-pressed={tab === "tasks"}
-              className={`px-3 sm:px-4 py-2 rounded text-sm font-medium transition ${
+              className={`px-3 py-2 rounded text-sm font-medium transition ${
                 tab === "tasks" ? "btn-primary" : "border"
               }`}
               style={
@@ -252,14 +315,13 @@ export default function DashboardPage() {
             </button>
             <button
               onClick={() => router.push("/gpt-month")}
-              className="px-3 sm:px-4 py-2 rounded text-sm font-medium border transition hover:bg-secondary"
-             
+              className="px-3 py-2 rounded text-sm font-medium border transition hover:bg-secondary"
             >
               GPT
             </button>
             <button
               onClick={() => router.push("/dsa")}
-              className="px-3 sm:px-4 py-2 rounded text-sm font-medium border transition hover:bg-secondary"
+              className="px-3 py-2 rounded text-sm font-medium border transition hover:bg-secondary"
               style={{
                 borderColor: "var(--primary)",
                 color: "var(--primary)",
@@ -269,7 +331,7 @@ export default function DashboardPage() {
             </button>
             <button
               onClick={handleLogout}
-              className="px-3 sm:px-4 py-2 rounded text-sm font-medium border"
+              className="px-3 py-2 rounded text-sm font-medium border"
               style={{
                 borderColor: "var(--border)",
                 color: "var(--fg-secondary)",
@@ -277,9 +339,97 @@ export default function DashboardPage() {
             >
               Logout
             </button>
-            <ThemeToggle />
+            <div className="ml-auto">
+              <ThemeToggle />
+            </div>
           </div>
         </div>
+
+        {/* Mobile Menu */}
+        {showMobileMenu && (
+          <div
+            className="sm:hidden border-t"
+            style={{ borderColor: "var(--border)" }}
+          >
+            <div className="px-3 py-4 space-y-2">
+              <button
+                onClick={() => {
+                  setTab("notes");
+                  setShowMobileMenu(false);
+                }}
+                aria-pressed={tab === "notes"}
+                className={`w-full px-3 py-2 rounded text-sm font-medium transition text-left ${
+                  tab === "notes" ? "btn-primary" : "border"
+                }`}
+                style={
+                  tab === "notes"
+                    ? {}
+                    : {
+                        borderColor: "var(--border)",
+                        color: "var(--fg-secondary)",
+                      }
+                }
+              >
+                WebD
+              </button>
+              <button
+                onClick={() => {
+                  setTab("tasks");
+                  setShowMobileMenu(false);
+                }}
+                aria-pressed={tab === "tasks"}
+                className={`w-full px-3 py-2 rounded text-sm font-medium transition text-left ${
+                  tab === "tasks" ? "btn-primary" : "border"
+                }`}
+                style={
+                  tab === "tasks"
+                    ? {}
+                    : {
+                        borderColor: "var(--border)",
+                        color: "var(--fg-secondary)",
+                      }
+                }
+              >
+                Tasks
+              </button>
+              <button
+                onClick={() => {
+                  router.push("/gpt-month");
+                  setShowMobileMenu(false);
+                }}
+                className="w-full px-3 py-2 rounded text-sm font-medium border transition hover:bg-secondary text-left"
+              >
+                GPT
+              </button>
+              <button
+                onClick={() => {
+                  router.push("/dsa");
+                  setShowMobileMenu(false);
+                }}
+                className="w-full px-3 py-2 rounded text-sm font-medium border transition hover:bg-secondary text-left"
+                style={{
+                  borderColor: "var(--primary)",
+                  color: "var(--primary)",
+                }}
+              >
+                DSA
+              </button>
+              <button
+                onClick={handleLogout}
+                className="w-full px-3 py-2 rounded text-sm font-medium border text-left"
+                style={{
+                  borderColor: "var(--border)",
+                  color: "var(--fg-secondary)",
+                }}
+              >
+                Logout
+              </button>
+              <div className="pt-2 flex justify-center">
+                <ThemeToggle />
+              </div>
+            </div>
+          </div>
+        )}
       </nav>
 
       <main className="flex  w-full pt-20 ">
@@ -353,36 +503,55 @@ export default function DashboardPage() {
                     className="text-xl sm:text-2xl font-bold"
                     style={{ color: "var(--primary)" }}
                   >
-                    Your Tasks
+                    English Words
                   </h2>
                 </div>
 
-                <div className="mb-8 flex flex-col sm:flex-row gap-3">
+                {/* Add Word Form */}
+                <div className="mb-8 grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <input
                     type="text"
-                    aria-label="New task"
-                    placeholder="Task text"
-                    value={newTask}
-                    onChange={(e) => setNewTask(e.target.value)}
-                    className="flex-1 p-3 rounded text-sm input-card border outline-none"
+                    aria-label="English"
+                    placeholder="English"
+                    value={newTask.english}
+                    onChange={(e) =>
+                      setNewTask({ ...newTask, english: e.target.value })
+                    }
+                    className="sm:col-span-1 col-span-1 p-3 rounded text-sm input-card border outline-none"
                   />
-                  <button
-                    onClick={addTask}
-                    className="inline-flex items-center gap-2 btn-primary px-6 py-3 rounded text-sm font-medium"
-                  >
-                    Add
-                  </button>
+                  <textarea
+                    aria-label="Meaning"
+                    placeholder="Meaning"
+                    value={newTask.meaning}
+                    onChange={(e) =>
+                      setNewTask({ ...newTask, meaning: e.target.value })
+                    }
+                    className="sm:col-span-1 col-span-1 p-3 rounded text-sm input-card border resize-vertical outline-none min-h-12"
+                  />
+                  <div className="flex items-end">
+                    <button
+                      onClick={addTask}
+                      className="w-full btn-primary px-6 py-3 rounded text-sm font-medium"
+                    >
+                      Add
+                    </button>
+                  </div>
                 </div>
 
-                <div className="space-y-3">
-                  {tasks.map((task) => (
-                    <TaskItem
-                      key={task._id}
-                      task={task}
-                      onUpdate={updateTask}
-                      onDelete={deleteTask}
-                    />
-                  ))}
+                {/* Words Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {tasks && tasks.length > 0 ? (
+                    tasks.map((task) => (
+                      <TaskCard
+                        key={task._id}
+                        task={task}
+                        onUpdate={updateTask}
+                        onDelete={deleteTask}
+                      />
+                    ))
+                  ) : (
+                    <p className="text-xs text-fg-secondary">No words yet</p>
+                  )}
                 </div>
               </section>
             )}

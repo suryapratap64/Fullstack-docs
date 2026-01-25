@@ -13,6 +13,7 @@ import {
   FaStar,
   FaSync,
   FaCalendar,
+  FaArrowLeft,
 } from "react-icons/fa";
 
 const MONTHS = [
@@ -45,6 +46,7 @@ export default function GptMonthPage() {
   const [selectedMonth, setSelectedMonth] = useState(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showPostModal, setShowPostModal] = useState(false);
+  const [showMobileMonthMenu, setShowMobileMonthMenu] = useState(false);
   const [editingPost, setEditingPost] = useState(null);
   const [currentYear] = useState(new Date().getFullYear());
   const [currentMonthNum] = useState(new Date().getMonth() + 1);
@@ -290,26 +292,72 @@ export default function GptMonthPage() {
 
   return (
     <div
-      className="min-h-screen p-4 md:p-8"
+      className="min-h-screen p-0 md:p-4 lg:p-8"
       style={{ background: "var(--bg)" }}
     >
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <h1
-            className="text-4xl font-bold mb-2"
-            style={{ color: "var(--primary)" }}
+        <div className="mb-8 p-4 md:p-0">
+          <button
+            onClick={() => router.back()}
+            className="flex items-center gap-2 mb-4 px-3 py-2 rounded-lg transition"
+            style={{
+              color: "var(--primary)",
+              background: "rgba(var(--primary-rgb), 0.1)",
+            }}
           >
-            📚 GPT Month Learning Tracker
-          </h1>
-          <p style={{ color: "var(--fg-secondary)" }}>
-            Track your monthly learning journey with AI-powered summaries
-          </p>
+            <FaArrowLeft /> Back
+          </button>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1
+                className="text-4xl font-bold mb-2"
+                style={{ color: "var(--primary)" }}
+              >
+                📚 GPT Month Learning Tracker
+              </h1>
+              <p style={{ color: "var(--fg-secondary)" }}>
+                Track your monthly learning journey with AI-powered summaries
+              </p>
+            </div>
+            {/* Mobile Hamburger Button */}
+            <button
+              onClick={() => setShowMobileMonthMenu(!showMobileMonthMenu)}
+              className="lg:hidden flex flex-col gap-1.5 p-2"
+              aria-label="Toggle month menu"
+            >
+              <span
+                className="w-6 h-0.5 transition-all duration-300 origin-center"
+                style={{
+                  background: "var(--primary)",
+                  transform: showMobileMonthMenu
+                    ? "rotate(45deg) translateY(8px)"
+                    : "",
+                }}
+              ></span>
+              <span
+                className="w-6 h-0.5 transition-all duration-300"
+                style={{
+                  background: "var(--primary)",
+                  opacity: showMobileMonthMenu ? 0 : 1,
+                }}
+              ></span>
+              <span
+                className="w-6 h-0.5 transition-all duration-300 origin-center"
+                style={{
+                  background: "var(--primary)",
+                  transform: showMobileMonthMenu
+                    ? "rotate(-45deg) translateY(-8px)"
+                    : "",
+                }}
+              ></span>
+            </button>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left Sidebar - Month List */}
-          <div className="lg:col-span-1">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-0 lg:gap-6 px-0 md:px-0 relative">
+          {/* Left Sidebar - Month List (Desktop) */}
+          <div className="lg:col-span-1 hidden lg:block">
             <div
               className="card rounded-lg p-4 border"
               style={{ background: "var(--card-bg)" }}
@@ -383,24 +431,113 @@ export default function GptMonthPage() {
             </div>
           </div>
 
+          {/* Mobile Month Menu (Hidden by default) */}
+          {showMobileMonthMenu && (
+            <div
+              className="lg:hidden fixed inset-0 z-40 bg-black/50"
+              onClick={() => setShowMobileMonthMenu(false)}
+            ></div>
+          )}
+          {showMobileMonthMenu && (
+            <div
+              className="lg:hidden fixed left-0 top-0 h-screen w-64 z-50 pt-20 border-r overflow-y-auto"
+              style={{
+                background: "var(--card-bg)",
+                borderColor: "var(--border)",
+              }}
+            >
+              <div className="p-4">
+                <div className="flex items-center justify-between mb-4">
+                  <h2
+                    className="text-lg font-bold"
+                    style={{ color: "var(--primary)" }}
+                  >
+                    Months
+                  </h2>
+                  <button
+                    onClick={() => setShowCreateModal(true)}
+                    className="btn-primary p-2 rounded-lg flex items-center gap-2 text-xs"
+                  >
+                    <FaPlus /> New
+                  </button>
+                </div>
+
+                <div className="space-y-2">
+                  {gptMonths.length === 0 ? (
+                    <p
+                      style={{ color: "var(--fg-secondary)" }}
+                      className="text-sm"
+                    >
+                      No months yet. Create one!
+                    </p>
+                  ) : (
+                    gptMonths.map((month) => (
+                      <div
+                        key={month._id}
+                        onClick={() => {
+                          setSelectedMonth(month);
+                          setShowMobileMonthMenu(false);
+                        }}
+                        className={`p-3 rounded-lg cursor-pointer transition border ${
+                          selectedMonth?._id === month._id
+                            ? "border-primary"
+                            : "border-transparent hover:border-primary"
+                        }`}
+                        style={{
+                          background:
+                            selectedMonth?._id === month._id
+                              ? "rgba(var(--primary-rgb), 0.1)"
+                              : "var(--bg)",
+                        }}
+                      >
+                        <div className="flex items-center justify-between mb-1">
+                          <span
+                            className="font-semibold text-sm"
+                            style={{ color: "var(--fg)" }}
+                          >
+                            {MONTHS[month.month - 1]} {month.year}
+                          </span>
+                          {month.isFavorite && (
+                            <FaStar className="text-yellow-500" size={12} />
+                          )}
+                        </div>
+                        <p
+                          style={{ color: "var(--fg-secondary)" }}
+                          className="text-xs truncate"
+                        >
+                          {month.title}
+                        </p>
+                        <div className="flex gap-1 mt-2 text-xs">
+                          <span className="badge bg-blue-500/20 text-blue-400 px-2 py-1 rounded">
+                            {month.posts?.length || 0} posts
+                          </span>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Right Content - Month Details */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-4 w-full">
             {selectedMonth ? (
               <div
-                className="card rounded-lg p-6 border"
-                style={{ background: "var(--card-bg)" }}
+                className="card rounded-none lg:rounded-lg p-4 lg:p-6 border overflow-y-auto"
+                style={{ background: "var(--card-bg)", maxHeight: "80vh" }}
               >
                 {/* Month Header */}
-                <div className="flex items-start justify-between mb-6">
+                <div className="flex items-start justify-between mb-4">
                   <div>
                     <h2
-                      className="text-3xl font-bold mb-2"
+                      className="text-2xl font-bold mb-1"
                       style={{ color: "var(--primary)" }}
                     >
                       {MONTHS[selectedMonth.month - 1]} {selectedMonth.year}
                     </h2>
                     <p
-                      className="text-lg font-semibold"
+                      className="text-base font-semibold"
                       style={{ color: "var(--fg)" }}
                     >
                       {selectedMonth.title}
@@ -432,12 +569,12 @@ export default function GptMonthPage() {
                 {/* Summary Section */}
                 {selectedMonth.summary && (
                   <div
-                    className="mb-6 p-4 rounded-lg"
+                    className="mb-4 p-3 rounded-lg"
                     style={{ background: "var(--bg)" }}
                   >
-                    <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center justify-between mb-1">
                       <h3
-                        className="font-semibold flex items-center gap-2"
+                        className="font-semibold flex items-center gap-2 text-sm"
                         style={{ color: "var(--primary)" }}
                       >
                         ✨ AI Summary{" "}
@@ -446,7 +583,7 @@ export default function GptMonthPage() {
                     </div>
                     <p
                       style={{ color: "var(--fg-secondary)" }}
-                      className="text-sm leading-relaxed"
+                      className="text-xs leading-relaxed"
                     >
                       {selectedMonth.summary}
                     </p>
@@ -454,9 +591,9 @@ export default function GptMonthPage() {
                 )}
 
                 {/* Stats */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
                   <div
-                    className="p-3 rounded-lg"
+                    className="p-2 rounded-lg"
                     style={{ background: "var(--bg)" }}
                   >
                     <p
@@ -466,7 +603,7 @@ export default function GptMonthPage() {
                       Total Posts
                     </p>
                     <p
-                      className="text-2xl font-bold"
+                      className="text-xl font-bold"
                       style={{ color: "var(--primary)" }}
                     >
                       {selectedMonth.posts?.length || 0}
@@ -532,7 +669,7 @@ export default function GptMonthPage() {
                 </div>
 
                 {/* Action Buttons */}
-                <div className="flex gap-2 mb-6">
+                <div className="flex gap-2 mb-4">
                   <button
                     onClick={() => {
                       setEditingPost(null);
@@ -565,7 +702,7 @@ export default function GptMonthPage() {
                 {/* Posts List */}
                 <div>
                   <h3
-                    className="text-lg font-bold mb-4"
+                    className="text-base font-bold mb-2"
                     style={{ color: "var(--primary)" }}
                   >
                     📝 Posts ({selectedMonth.posts?.length || 0})
@@ -586,7 +723,7 @@ export default function GptMonthPage() {
                       </p>
                     </div>
                   ) : (
-                    <div className="space-y-4 max-h-[55vh] overflow-y-auto pr-2">
+                    <div className="space-y-3 pr-2">
                       {selectedMonth.posts?.map((post, idx) => (
                         <div
                           key={post._id || idx}
